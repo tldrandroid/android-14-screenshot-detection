@@ -1,6 +1,7 @@
 package com.tldrandroid.screenshotdetection
 
 import android.annotation.SuppressLint
+import android.app.Activity.ScreenCaptureCallback
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +23,14 @@ import com.tldrandroid.screenshotdetection.ui.theme.ScreenshotDetectionTheme
 @SuppressLint("NewApi")
 class MainActivity : ComponentActivity() {
     private val mainViewModel = MainViewModel()
+    private val screenCaptureCallback = ScreenCaptureCallback {
+        mainViewModel.screenshotValue()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        registerScreenCaptureCallback(mainExecutor, screenCaptureCallback)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,5 +55,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterScreenCaptureCallback(screenCaptureCallback)
     }
 }
